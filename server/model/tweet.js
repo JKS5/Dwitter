@@ -28,18 +28,18 @@ let arrayOfTweets = [
   },
 ];
 
-export function GetAllTweet() {
+export function GetAll() {
   return arrayOfTweets;
 }
-export function GetAllTweetByUsername(username) {
+export function GetAllByUsername(username) {
   return arrayOfTweets.filter((tweet) => tweet.username === username);
 }
 
-export function GetTweetbyId(id) {
+export function GetbyId(id) {
   return arrayOfTweets.find((t) => t.id === id);
 }
 
-export function PostTweet({ text, name, username }) {
+export function Post({ text, name, username }) {
   const tweet = {
     id: Date.now().toString(),
     text,
@@ -50,13 +50,13 @@ export function PostTweet({ text, name, username }) {
   arrayOfTweets = [tweet, ...arrayOfTweets];
   return tweet;
 }
-export function PutTweet(id, text) {
+export function Put(id, text) {
   const tweet = arrayOfTweets.find((tweet) => tweet.id === id);
   if (tweet) {
     tweet.text = text;
   }
   return tweet;
 }
-export function DeleteTweet({ params }) {
+export function Remove({ params }) {
   arrayOfTweets = arrayOfTweets.filter((tweet) => tweet.id !== params);
 }
