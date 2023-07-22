@@ -1,17 +1,18 @@
 import express from 'express';
 import 'express-async-errors';
 import * as ImportData from '../model/tweet.js';
-export function getTweets(req, res, next) {
+
+export async function getTweets(req, res, next) {
   const username = req.query.username;
-  const data = username
+  const data = await (username
     ? ImportData.GetAllByUsername(username)
-    : ImportData.GetAll();
+    : ImportData.GetAll());
   res.status(200).json(data);
 }
 
-export function getTweetbyId(req, res) {
+export async function getTweetbyId(req, res) {
   const id = req.params.id;
-  const tweet = ImportData.GetbyId(id);
+  const tweet = await ImportData.GetbyId(id);
   if (tweet) {
     res.status(200).json(tweet);
   } else {
@@ -24,22 +25,22 @@ export function getTweetbyId(req, res) {
   // res.status(200).json(data);
 }
 
-export function postTweet(req, res, next) {
-  const createdTweet = ImportData.Post(req.body);
+export async function postTweet(req, res, next) {
+  const createdTweet = await ImportData.Post(req.body);
   res.status(201).json(createdTweet);
 }
 
-export function putTweet(req, res, next) {
+export async function putTweet(req, res, next) {
   const id = req.params.id;
   const text = req.body.text;
-  const tweet = ImportData.Put(id, text);
+  const tweet = await ImportData.Put(id, text);
   if (tweet) {
     res.status(200).json(tweet);
   } else {
     res.status(404).json({ message: `Tweet id ${id} doesn't exist` });
   }
 }
-export function deleteTweet(req, res, next) {
+export async function deleteTweet(req, res, next) {
   const params = req.params.id;
   if (params) {
     ImportData.Remove(params);
