@@ -43,7 +43,7 @@ export async function putTweet(req, res, next) {
 export async function deleteTweet(req, res, next) {
   const params = req.params.id;
   if (params) {
-    ImportData.Remove(params);
+    await ImportData.Remove(params);
     res.sendStatus(204);
   }
 }

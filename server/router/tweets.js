@@ -4,6 +4,11 @@ import * as tweetController from '../controller/tweet.js';
 import { body } from 'express-validator';
 import { validate } from '../middleware/validator.js';
 
+// validation
+// sanitizaiton
+// Contract Testing: Client-Server
+// Proto-base
+
 const router = express.Router();
 
 const validateTweet = [
