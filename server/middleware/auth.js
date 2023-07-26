@@ -3,7 +3,7 @@ import * as userRepository from '../model/auth.js';
 
 const AUTH_ERROR = { message: 'Authentication Error' };
 
-// isAuth는 로그인 한 사용자만 접근 가능하도록 나중에 활 가능
+// isAuth는 로그인 한 사용자만 접근 가능하도록 나중에 활용 가능
 export const isAuth = async (req, res, next) => {
   const authHeader = req.get('Authorization');
   //req에서 오는 토큰이 있는지 존재여부 확인

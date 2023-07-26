@@ -26,14 +26,15 @@ export async function getTweetbyId(req, res) {
 }
 
 export async function postTweet(req, res, next) {
-  const createdTweet = await ImportData.Post(req.body);
+  const { text } = req.body;
+  const createdTweet = await ImportData.create(text, req.userId);
   res.status(201).json(createdTweet);
 }
 
 export async function putTweet(req, res, next) {
   const id = req.params.id;
   const text = req.body.text;
-  const tweet = await ImportData.Put(id, text);
+  const tweet = await ImportData.update(id, text);
   if (tweet) {
     res.status(200).json(tweet);
   } else {

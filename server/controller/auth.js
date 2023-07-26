@@ -12,14 +12,14 @@ const bcryptSaltRounds = 12;
 export async function postSignUp(req, res, next) {
   //데이터 받아오기
   const { username, password, name, email, url } = req.body;
-  // data 찾아오기
+  // data 중복 찾아보고 거르기
   const found = await userRepository.findByUsername(username);
   if (found) {
     return res.status(409).json({ message: `${username} already exists` });
   }
   //비번 해싱
   const hashed = await bcrypt.hash(password, bcryptSaltRounds);
-  // model로 넘겨 데이터 생성
+  // model로 넘겨 데이터 생성후 유저고유id 넘겨받기
   const userId = await userRepository.createUser({
     username,
     password: hashed,
@@ -27,7 +27,7 @@ export async function postSignUp(req, res, next) {
     email,
     url,
   });
-  //고유 Id로 토큰 제작
+  //고유 유저Id로 토큰 제작
   const token = createJwtToken(userId);
   //토큰과 유저이름 넘겨주기
   res.status(201).json({ token, username });
@@ -35,12 +35,12 @@ export async function postSignUp(req, res, next) {
 
 export async function login(req, res, next) {
   const { username, password } = req.body;
-  //동일한 정보 가져와서 확인
+  //동일한 정보 가져와서 DB존재 여부 확인
   const user = await userRepository.findByUsername(username);
   if (!user) {
     res.status(401).json({ message: 'Invalid user or password' });
   }
-  //암호 동일한지 파악(이게 조금 신기)
+  //암호 동일한지 파악
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
     return res.status(401).json({ message: 'Invalid user or password' });
