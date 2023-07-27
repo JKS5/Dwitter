@@ -1,61 +1,48 @@
 export default class TweetService {
-  constructor(baseURL) {
-    this.baseURL = baseURL;
+  constructor(http, tokenStorage) {
+    this.http = http;
+    this.tokenStorage = tokenStorage;
   }
 
   async getTweets(username) {
     const query = username ? `?username=${username}` : '';
-    const response = await fetch(`${this.baseURL}/tweets${query}`, {
+    return this.http.fetch(`/tweets${query}`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
     });
-
-    const data = await response.json();
-    if (response.status !== 200) {
-      throw new Error();
-    }
-
-    return data;
   }
 
   async postTweet(text) {
-    const response = await fetch(`${this.baseURL}/tweets`, {
+    return this.http.fetch(`/tweets`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify({
         text: text,
         name: 'Ellie',
         username: 'ellie',
       }),
     });
-    const data = await response.json();
-    if (response.status !== 201) {
-      throw new Error();
-    }
-    return data;
   }
 
   async deleteTweet(tweetId) {
-    const response = await fetch(`${this.baseURL}/tweets/${tweetId}`, {
+    return this.http.fetch(`/tweets/${tweetId}`, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
     });
-
-    if (response.status !== 204) {
-      throw new Error();
-    }
   }
 
   async updateTweet(tweetId, text) {
-    const response = await fetch(`${this.baseURL}/tweets/${tweetId}`, {
+    return this.http.fetch(`/tweets/${tweetId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.getHeaders(),
       body: JSON.stringify({ text }),
     });
-    const data = await response.json();
-    if (response.status !== 200) {
-      throw new Error();
-    }
-    return data;
+  }
+
+  getHeaders() {
+    const token = this.tokenStorage.getToken();
+    return {
+      Authorization: `Bearer ${token}`,
+    };
   }
 }
