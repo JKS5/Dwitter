@@ -34,15 +34,25 @@ export async function postTweet(req, res, next) {
 export async function putTweet(req, res, next) {
   const id = req.params.id;
   const text = req.body.text;
-  const tweet = await ImportData.update(id, text);
-  if (tweet) {
-    res.status(200).json(tweet);
-  } else {
-    res.status(404).json({ message: `Tweet id ${id} doesn't exist` });
+  const tweet = await ImportData.GetbyId(id);
+  if (!tweet) {
+    return res.sendStatus(404);
   }
+  if (tweet.userId !== req.userId) {
+    return res.sendStatus(403);
+  }
+  const updated = await ImportData.update(id, text);
+  res.status(200).json(updated);
 }
 export async function deleteTweet(req, res, next) {
-  const params = req.params.id;
+  const id = req.params.id;
+  const tweet = await ImportData.GetbyId(id);
+  if (!tweet) {
+    return res.sendStatus(404);
+  }
+  if (tweet.userId !== req.userId) {
+    return res.snedStatus(403);
+  }
   if (params) {
     await ImportData.Remove(params);
     res.sendStatus(204);
