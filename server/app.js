@@ -7,6 +7,7 @@ import tweetsRoute from './router/tweets.js';
 import authRoute from './router/auth.js';
 
 const app = express();
+
 const corsOption = cors({
   origin: ['*'],
   optionsSuccessStatus: 200,

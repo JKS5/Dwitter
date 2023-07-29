@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import * as userRepository from '../model/auth.js';
+import { config } from '../config.js';
 
 const AUTH_ERROR = { message: 'Authentication Error' };
 
@@ -14,21 +15,17 @@ export const isAuth = async (req, res, next) => {
   const token = authHeader.split(' ')[1];
   //Todo Make it secure
   //토큰 검증
-  jwt.verify(
-    token,
-    '4CdtAiG5ZM3PxgW^aWh@BEO8s%pa5xrH',
-    async (error, decoded) => {
-      if (error) {
-        return res.status(401).json(AUTH_ERROR);
-      }
-      //2차 검증 토큰이 맞더라도, 해당 아이디가 있는지 확인
-      const user = await userRepository.findById(decoded.id);
-
-      if (!user) {
-        return res.status(401).json(AUTH_ERROR);
-      }
-      req.userId = user.id; //req.customData
-      next();
+  jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
+    if (error) {
+      return res.status(401).json(AUTH_ERROR);
     }
-  );
+    //2차 검증 토큰이 맞더라도, 해당 아이디가 있는지 확인
+    const user = await userRepository.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json(AUTH_ERROR);
+    }
+    req.userId = user.id; //req.customData
+    next();
+  });
 };
