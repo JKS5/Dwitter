@@ -11,7 +11,7 @@ let users = [
   {
     id: '2',
     username: 'username2',
-    password: 'password2',
+    password: '$2b$12$gv6vAwUcsXCRCwuNo3V9ou6igSzEYCe4PTSvc76c/P1i0A7gp0.di',
     name: 'name2',
     email: 'example2@email.com',
     url: '',
