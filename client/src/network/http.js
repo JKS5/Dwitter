@@ -8,10 +8,11 @@ export default class HttpClient {
     const response = await fetch(`${this.baseURL}${url}`, {
       ...options,
       headers: {
-        'Content-Type': 'application/json',
         ...options.headers,
+        'Content-Type': 'application/json',
       },
     });
+
     // const data = await response.json()을 안하고 try catch문으로 또 만든 이유
     // body가 없는 response에 json을 호출하면 에러를 발생시킬 수 있기 때문에 try catch문으로 잡는다.
     let data = await response.json();
