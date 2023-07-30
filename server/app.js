@@ -5,9 +5,9 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import tweetsRoute from './router/tweets.js';
 import authRoute from './router/auth.js';
-import { Server } from 'socket.io';
 import { config } from './config.js';
-
+import { initSocket, getSocketIO } from './connection/socket.js';
+import { Server } from 'socket.io';
 const app = express();
 
 const corsOption = cors({
@@ -37,17 +37,20 @@ app.use((error, req, res, next) => {
 });
 
 const server = app.listen(config.host.port);
-//뒤에 여러개의 옵션을 보내줄 수 있음.
-const socketIO = new Server(server, { cors: { origin: '*' } });
 
-//on이라는 connection을 했다면 Listen해서 뒤 callback으로  Client에 전해주기
-socketIO.on('connection', (socket) => {
-  console.log('Client is here!');
-  //event base이기 때문에 emit 해서 Client에 보내주기
-  socketIO.emit('dwitter', 'Hello! message');
+// const socketIO = new Server(server, {
+//   cors: {
+//     origin: '*',
+//   },
+// });
+// socketIO.on('connection', (socket) => {
+//   console.log(socket);
+//   socketIO.emit('dwitter', 'hello');
+// });
+
+initSocket(server);
+getSocketIO().emit('tweets', 'hi');
+getSocketIO().on('tweet', (socket) => {
+  console.log('i received from client');
+  getSocketIO().emit('tweet', 'hey you i send you from server');
 });
-
-setInterval(() => {
-  socketIO.emit('dwitter', 'setInterval Message');
-}, 1000);
-// socketIO.on('dwitter', (msg) => console.log(msg));

@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import * as ImportData from '../model/tweet.js';
+import { getSocketIO } from '../connection/socket.js';
 
 export async function getTweets(req, res, next) {
   const username = req.query.username;
@@ -29,6 +30,7 @@ export async function postTweet(req, res, next) {
   const { text } = req.body;
   const createdTweet = await ImportData.create(text, req.userId);
   res.status(201).json(createdTweet);
+  getSocketIO().emit('tweets', createdTweet);
 }
 
 export async function putTweet(req, res, next) {

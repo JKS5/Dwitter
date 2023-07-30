@@ -1,28 +1,60 @@
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import { config } from '../config';
+import { config } from '../config.js';
 
+// export 하지 않은 class이다.
+// 객체지향프로그래밍에서는 보통 싱글톤을 구현할때는
+// 우리가 class 안에서 구현할 수 있다.
+// private과 factory 함수인 static 함수를 만들면 되지만, 그건 나중에 Typescript에서
 class Socket {
   constructor(server) {
     this.io = new Server(server, {
-      cors: {
-        origin: '*',
-      },
+      cors: '*',
+    });
+
+    this.io.use((Socket, next) => {
+      const token = Socket.handshake.auth.token;
+      if (!token) {
+        return next(new Error('Authentication error'));
+      }
+      jwt.verify(token, config.jwt.secretKey, (error, decoded) => {
+        if (error) {
+          return next(new Error('Authentication error'));
+        }
+        next();
+      });
+    });
+    this.io.use((socket, next) => {
+      const token = socket.handshake.auth.token;
+      if (!token) {
+        return next(new Error('Authentication error'));
+      }
+      jwt.verify(token, config.jwt.secretKey, (error, decoded) => {
+        if (error) {
+          return next(new Error('Authentication error'));
+        }
+        next();
+      });
+    });
+
+    this.io.on('connection', (socket) => {
+      console.log('Socket client connected');
     });
   }
 }
 
-//뒤에 여러개의 옵션을 보내줄 수 있음.
-const socketIO = new Server(server, { cors: { origin: '*' } });
-
-//on이라는 connection을 했다면 Listen해서 뒤 callback으로  Client에 전해주기
-socketIO.on('connection', (socket) => {
-  console.log('Client is here!');
-  //event base이기 때문에 emit 해서 Client에 보내주기
-  socketIO.emit('dwitter', 'Hello! message');
-});
-
-setInterval(() => {
-  socketIO.emit('dwitter', 'setInterval Message');
-}, 1000);
-// socketIO.on('dwitter', (msg) => console.log(msg));
+// 한번만 위 class Socket의 instance를 만든다.
+let socket;
+export function initSocket(server) {
+  // class의 Socket instance가 없다면 만들고있다면 만들지 않는다..
+  if (!socket) {
+    socket = new Socket(server);
+  }
+}
+// 사용하는 사람은 나중에 getSocketIo를 호출하면 위 class의 socket.io를 전달해주게 된다.
+export function getSocketIO() {
+  if (!socket) {
+    throw new Error('Please call init first');
+  }
+  return socket.io;
+}
