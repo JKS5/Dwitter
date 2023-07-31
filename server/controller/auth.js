@@ -15,7 +15,7 @@ export async function postSignUp(req, res, next) {
   }
   //비번 해싱
   const hashed = await bcrypt.hash(password, config.bcrypt.saltRounds);
-  // model로 넘겨 데이터 생성후 유저고유id 넘겨받기
+  // model에서 데이터 생성후 유저고유id를 넘겨받기
   const userId = await userRepository.createUser({
     username,
     password: hashed,

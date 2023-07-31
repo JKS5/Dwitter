@@ -8,6 +8,8 @@ import authRoute from './router/auth.js';
 import { config } from './config.js';
 import { initSocket, getSocketIO } from './connection/socket.js';
 import { Server } from 'socket.io';
+import { db } from './db/database.js';
+
 const app = express();
 
 const corsOption = cors({
@@ -36,21 +38,7 @@ app.use((error, req, res, next) => {
   res.sendStatus(500);
 });
 
+// db.getConnection().then((connection) => console.log(connection));
+
 const server = app.listen(config.host.port);
-
-// const socketIO = new Server(server, {
-//   cors: {
-//     origin: '*',
-//   },
-// });
-// socketIO.on('connection', (socket) => {
-//   console.log(socket);
-//   socketIO.emit('dwitter', 'hello');
-// });
-
 initSocket(server);
-getSocketIO().emit('tweets', 'hi');
-getSocketIO().on('tweet', (socket) => {
-  console.log('i received from client');
-  getSocketIO().emit('tweet', 'hey you i send you from server');
-});
