@@ -1,4 +1,3 @@
-import express from 'express';
 import 'express-async-errors';
 import * as ImportData from '../model/tweet.js';
 import { getSocketIO } from '../connection/socket.js';
@@ -53,10 +52,10 @@ export async function deleteTweet(req, res, next) {
     return res.sendStatus(404);
   }
   if (tweet.userId !== req.userId) {
-    return res.snedStatus(403);
+    return res.sendStatus(403);
   }
-  if (params) {
-    await ImportData.Remove(params);
+  if (id) {
+    await ImportData.Remove(id);
     res.sendStatus(204);
   }
 }
