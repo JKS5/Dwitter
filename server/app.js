@@ -9,6 +9,7 @@ import { config } from './config.js';
 import { initSocket, getSocketIO } from './connection/socket.js';
 import { Server } from 'socket.io';
 import { db } from './db/database.js';
+import { connectedDB } from './database/database.js';
 
 const app = express();
 
@@ -38,7 +39,9 @@ app.use((error, req, res, next) => {
   res.sendStatus(500);
 });
 
-// db.getConnection().then((connection) => console.log(connection));
-
-const server = app.listen(config.host.port);
-initSocket(server);
+connectedDB()
+  .then(() => {
+    const server = app.listen(config.host.port);
+    initSocket(server);
+  })
+  .catch(console.error());
