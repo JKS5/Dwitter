@@ -41,6 +41,7 @@ app.use((error, req, res, next) => {
 
 connectedDB()
   .then(() => {
+    console.log('init');
     const server = app.listen(config.host.port);
     initSocket(server);
   })
