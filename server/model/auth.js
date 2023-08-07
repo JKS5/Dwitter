@@ -6,15 +6,12 @@ export async function findByUsername(username) {
     .then((result) => {
       return result[0][0];
     });
-  // return users.find((user) => user.username === username);
 }
 
 export async function findById(id) {
   return db.execute('SELECT * FROM users WHERE id=?', [id]).then((result) => {
     return result[0][0];
   });
-
-  // return users.find((user) => user.id === id);
 }
 
 export async function createUser(user) {
