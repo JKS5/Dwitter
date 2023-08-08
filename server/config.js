@@ -28,4 +28,7 @@ export const config = {
     password: required('DB_PASSWORD'),
     // port: required('DB_PORT'),
   },
+  mongodb: {
+    host: required('MG_DB_HOST'),
+  },
 };
