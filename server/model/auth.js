@@ -13,11 +13,13 @@ useVirtualId(userSchema);
 const User = Mongoose.model('User', userSchema);
 
 export async function findByUsername(username) {
+
   return User.findOne({ username });
 }
 
 export async function findById(id) {
   return User.findById(id);
+
 }
 
 export async function createUser(user) {

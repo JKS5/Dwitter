@@ -21,11 +21,13 @@ export async function GetAll() {
 }
 
 export async function GetAllByUsername(username) {
+
   return Tweet.find({ username }).sort({ createdAt: -1 });
 }
 
 export async function GetbyId(id) {
   return Tweet.findById(id);
+
 }
 
 export async function create(text, userId) {
@@ -43,5 +45,4 @@ export async function update(id, text) {
 }
 export async function Remove(id) {
   return Tweet.findByIdAndDelete(id);
-  return getTweets().deleteOne({ _id: new ObjectId(id) });
 }
