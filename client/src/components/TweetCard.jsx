@@ -34,7 +34,12 @@ const TweetCard = memo(
         </section>
         {owner && (
           <div className='tweet-action'>
-            <button className='tweet-action-btn' onClick={() => onDelete(id)}>
+            <button
+              className='tweet-action-btn'
+              onClick={() => {
+                return onDelete(id);
+              }}
+            >
               x
             </button>
             <button
